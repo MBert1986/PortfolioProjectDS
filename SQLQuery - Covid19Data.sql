@@ -11,7 +11,7 @@ ORDER BY 1,2
  -- PORCENTAJE DE CONTAGIO
 SELECT location, date, total_cases, population, (total_cases /population)*100 as contagious_percentage
 FROM PortfolioProject..CovidDataDeaths 
-WHERE location = 'Argentina'
+WHERE location LIKE '%states'
 ORDER BY 1,2
 
  -- ICU
@@ -23,12 +23,13 @@ ORDER BY 1,2
  -- PROMEDIOS TOTALES GLOBALES
 SELECT location, AVG(total_deaths) Promedio_total_muertes, AVG(total_cases) Promedio_total_casos
 FROM PortfolioProject..CovidDataDeaths 
+WHERE continent is not null
 GROUP BY location
 ORDER BY 2 DESC
 
  -- PAISES CON ALTA INFECCION
 SELECT location, MAX(total_cases) as High_cases, population, MAX(total_cases /population)*100 as HighContagious
-FROM PortfolioProject..CovidDataDeaths 
+FROM PortfolioProject..CovidDataDeaths  
 GROUP BY location, population
 ORDER BY HighContagious desc
 
@@ -63,7 +64,7 @@ With PopvsVac (Continent, Location, Date, Population, New_Vaccinations, RollingP
 as
 (
 Select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
-, SUM(CONVERT(int,vac.new_vaccinations)) OVER (Partition by dea.Location Order by dea.location, dea.Date) as RollingPeopleVaccinated
+, SUM(TRY_CONVERT(int,vac.new_vaccinations)) OVER (Partition by dea.Location Order by dea.location, dea.Date) as RollingPeopleVaccinated
 --, (RollingPeopleVaccinated/population)*100
 From PortfolioProject..CovidDataDeaths dea
 Join PortfolioProject..CovidDataVaccinations vac
