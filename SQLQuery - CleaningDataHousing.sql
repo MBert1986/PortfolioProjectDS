@@ -60,7 +60,7 @@ UPDATE NashvilleHousing
 SET PropertyCity = SUBSTRING(PropertyAddress , CHARINDEX(',', PropertyAddress)+1, LEN(PropertyAddress))
 
 
--- Limpiando direccion de dueños
+-- Limpiando direccion de dueÃ±os
 
 SELECT OwnerAddress
 FROM PortfolioProject..NashvilleHousing
@@ -74,7 +74,7 @@ FROM PortfolioProject..NashvilleHousing
 ALTER TABLE PortfolioProject..NashvilleHousing 
 ADD OwnerAddress2 Nvarchar(255);
 
-ALTER TABLE PortfolioProject..NashvilleHousing  
+ALTER TABLE PortfolioProject..Nashvi lleHousing  
 ADD OwnerCity Varchar(255);
 
 ALTER TABLE PortfolioProject..NashvilleHousing  
@@ -102,4 +102,40 @@ SET SoldAsVacant = CASE When SoldAsVacant = 'Y' Then 'Yes'
 						END
 
 -- Eliminar duplicados
+
+WITH RowNumCTE AS(Select *,
+	ROW_NUMBER() OVER (
+	PARTITION BY ParcelID,
+	PropertyAddress,
+	SalePrice,
+	SaleDate,
+	LegalReference
+	ORDER BY UniqueID
+	) row_num
+
+From PortfolioProject.dbo.NashvilleHousing
+--order by ParcelID
+)
+Select *
+From RowNumCTE
+Where row_num > 1
+Order by PropertyAddress
+
+
+Select *
+From PortfolioProject.dbo.NashvilleHousing
+
+
+
+-- Eliminar columnas no usadas
+
+
+Select *
+From PortfolioProject.dbo.NashvilleHousing
+
+
+ALTER TABLE PortfolioProject.dbo.NashvilleHousing
+DROP COLUMN OwnerAddress, TaxDistrict, PropertyAddress, SaleDate
+
+
 
