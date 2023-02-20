@@ -20,6 +20,12 @@ FROM PortfolioProject..CovidDataDeaths
 WHERE location = 'Argentina'
 ORDER BY 1,2
 
+ -- PROMEDIOS TOTALES GLOBALES
+SELECT location, AVG(total_deaths) Promedio_total_muertes, AVG(total_cases) Promedio_total_casos
+FROM PortfolioProject..CovidDataDeaths 
+GROUP BY location
+ORDER BY 2 DESC
+
  -- PAISES CON ALTA INFECCION
 SELECT location, MAX(total_cases) as High_cases, population, MAX(total_cases /population)*100 as HighContagious
 FROM PortfolioProject..CovidDataDeaths 
@@ -95,7 +101,6 @@ Join PortfolioProject..CovidDataVaccinations vac
 
 Select *, (RollingPeopleVaccinated/Population)*100
 From #PercentPopulationVaccinated
-
 
 
 -- CREANDO UNA VISTA (VIEW)
